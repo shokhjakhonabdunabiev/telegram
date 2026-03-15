@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/shokhjakhonabdunabiev/tgclient/telegram"
+	"github.com/shokhjakhonabdunabiev/telegram"
 )
 
 func main() {
 	client := telegram.NewClient("", 10*time.Second)
+
 
 	user, err := client.GetMe()
 	if err != nil {

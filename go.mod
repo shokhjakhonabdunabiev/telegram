@@ -1,3 +1,3 @@
-module github.com/shokhjakhonabdunabiev/tgclient
+module github.com/shokhjakhonabdunabiev/telegram
 
 go 1.25.4
