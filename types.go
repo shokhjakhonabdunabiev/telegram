@@ -1,5 +1,7 @@
 package telegram
 
+// More about types on https://core.telegram.org/bots/api
+
 type User struct {
 	ID                        int64  `json:"id"`
 	IsBot                     bool   `json:"is_bot"`
@@ -256,23 +258,44 @@ type ExternalReplyInfo struct {
 	Venue              *Venue              `json:"venue,omitempty"`
 }
 
+type ReplyParameters struct {
+	MessageID                int              `json:"message_id"`
+	ChatID                   string           `json:"chat_id,omitempty"`
+	AllowSendingWithoutReply bool             `json:"allow_sending_without_reply,omitempty"`
+	Quote                    string           `json:"quote,omitempty"`
+	QuoteParseMode           string           `json:"quote_parse_mode,omitempty"`
+	QuoteEntities            []*MessageEntity `json:"quote_entities,omitempty"`
+	QuotePosition            int              `json:"quote_position,omitempty"`
+	ChecklistTaskID          int              `json:"checklist_task_id,omitempty"`
+}
+
 // TODO
-type MessageOrigin struct {
-	Type string `json:"type"`
-	Date int64  `json:"date"`
+type MessageOrigin struct{}
 
-	// user
-	SenderUser *User `json:"sender_user,omitempty"`
+type MessageOriginUser struct {
+	Type       string `json:"type"`
+	Date       int64  `json:"date"`
+	SenderUser *User  `json:"sender_user"`
+}
 
-	// hidden_user
-	SenderUserName string `json:"sender_user_name,omitempty"`
+type MessageOriginHiddenUser struct {
+	Type           string `json:"type"`
+	Date           int64  `json:"date"`
+	SenderUserName string `json:"sender_user_name"`
+}
 
-	// chat
-	SenderChat *Chat `json:"sender_chat,omitempty"`
+type MessageOriginChat struct {
+	Type            string `json:"type"`
+	Date            int64  `json:"date"`
+	SenderChat      *Chat  `json:"sender_chat"`
+	AuthorSignature string `json:"author_signature,omitempty"`
+}
 
-	// channel
-	Chat            *Chat  `json:"chat,omitempty"`
-	MessageID       int    `json:"message_id,omitempty"`
+type MessageOriginChannel struct {
+	Type            string `json:"type"`
+	Date            int64  `json:"date"`
+	Chat            *Chat  `json:"chat"`
+	MessageID       int    `json:"message_id"`
 	AuthorSignature string `json:"author_signature,omitempty"`
 }
 
@@ -371,6 +394,23 @@ type PaidMediaInfo struct {
 // TODO
 type PaidMedia struct{}
 
+type PaidMediaPreview struct {
+	Type     string `json:"type"`
+	Width    int    `json:"width"`
+	Height   int    `json:"height"`
+	Duration int    `json:"duration"`
+}
+
+type PaidMediaPhoto struct {
+	Type  string       `json:"type"`
+	Photo []*PhotoSize `json:"photo"`
+}
+
+type PaidMediaVideo struct {
+	Type  string `json:"type"`
+	Video *Video `json:"video"`
+}
+
 type Contact struct {
 	PhoneNumber string `json:"phone_number"`
 	FirstName   string `json:"first_name"`
@@ -388,6 +428,19 @@ type PollOption struct {
 	Text         string           `json:"text"`
 	TextEntities []*MessageEntity `json:"text_entities,omitempty"`
 	VoterCount   int              `json:"voter_count"`
+}
+
+type InputPollOption struct {
+	Text          string           `json:"text"`
+	TextParseMode string           `json:"text_parse_mode,omitempty"`
+	TextEntities  []*MessageEntity `json:"text_entities,omitempty"`
+}
+
+type PollAnswer struct {
+	PollID    string `json:"poll_id"`
+	VoterChat *Chat  `json:"voter_chat,omitempty"`
+	User      *User  `json:"user,omitempty"`
+	OptionIDs []int  `json:"option_ids"`
 }
 
 type Poll struct {
@@ -422,6 +475,22 @@ type Checklist struct {
 	Tasks                    []*ChecklistTask `json:"tasks"`
 	OthersCanAddTasks        bool             `json:"others_can_add_tasks,omitempty"`
 	OthersCanMarkTasksAsDone bool             `json:"others_can_mark_tasks_as_done,omitempty"`
+}
+
+type InputChecklistTask struct {
+	ID           int              `json:"id"`
+	Text         string           `json:"text,omitempty"`
+	ParseMode    string           `json:"parse_mode,omitempty"`
+	TextEntities []*MessageEntity `json:"text_entities,omitempty"`
+}
+
+type InputChecklist struct {
+	Title                    string                `json:"title"`
+	ParseMode                string                `json:"parse_mode,omitempty"`
+	TitleEntities            []*MessageEntity      `json:"title_entities,omitempty"`
+	Tasks                    []*InputChecklistTask `json:"tasks"`
+	OthersCanAddTasks        bool                  `json:"others_can_add_tasks,omitempty"`
+	OthersCanMarkTasksAsDone bool                  `json:"others_can_mark_tasks_as_done,omitempty"`
 }
 
 type ChecklistTasksDone struct {
@@ -474,7 +543,55 @@ type ChatBoostAdded struct {
 }
 
 // TODO
+type BackgroundFill struct{}
+
+type BackgroundFillSolid struct {
+	Type  string `json:"type"`
+	Color int    `json:"color"`
+}
+
+type BackgroundFillGradient struct {
+	Type          string `json:"type"`
+	TopColor      int    `json:"top_color"`
+	BottomColor   int    `json:"bottom_color"`
+	RotationColor int    `json:"rotation_color"`
+}
+
+type BackgroundFillFreeformGradient struct {
+	Type   string `json:"type"`
+	Colors []int  `json:"colors"`
+}
+
+// TODO
 type BackgroundType struct{}
+
+type BackgroundTypeFill struct {
+	Type             string          `json:"type"`
+	Fill             *BackgroundFill `json:"fill"`
+	DarkThemeDimming int             `json:"dark_theme_dimming"`
+}
+
+type BackgroundTypeWallpaper struct {
+	Type             string    `json:"type"`
+	Document         *Document `json:"document"`
+	DarkThemeDimming int       `json:"dark_theme_dimming"`
+	IsBlurred        bool      `json:"is_blurred,omitempty"`
+	IsMoving         bool      `json:"is_moving,omitempty"`
+}
+
+type BackgroundTypePattern struct {
+	Type       string          `json:"type"`
+	Document   *Document       `json:"document"`
+	Fill       *BackgroundFill `json:"fill"`
+	Intensity  int             `json:"intensity"`
+	IsInverted bool            `json:"is_inverted,omitempty"`
+	IsMoving   bool            `json:"is_moving,omitempty"`
+}
+
+type BackgroundTypeChatTheme struct {
+	Type      string `json:"type"`
+	ThemeName string `json:"theme_name"`
+}
 
 type ChatBackground struct {
 	Type *BackgroundType `json:"type"`
@@ -644,9 +761,24 @@ type SuggestedPostInfo struct {
 	SendDate int64               `json:"send_date,omitempty"`
 }
 
+type SuggestedPostParameters struct {
+	Price    *SuggestedPostPrice `json:"price,omitempty"`
+	SendDate int64               `json:"send_date,omitempty"`
+}
+
 type DirectMessagesTopic struct {
 	TopicID int64 `json:"topic_id"`
 	User    *User `json:"user,omitempty"`
+}
+
+type UserProfilePhotos struct {
+	TotalCount int            `json:"total_count"`
+	Photos     [][]*PhotoSize `json:"photos"`
+}
+
+type UserProfileAudios struct {
+	TotalCount int      `json:"total_count"`
+	Audios     []*Audio `json:"audios"`
 }
 
 type File struct {
@@ -658,6 +790,60 @@ type File struct {
 
 type WebAppInfo struct {
 	URL string `json:"url"`
+}
+
+type ReplyKeyboardMarkup struct {
+	Keyboard              [][]*KeyboardButton `json:"keyboard"`
+	IsPersistent          bool                `json:"is_persistent,omitempty"`
+	ResizeKeyboard        bool                `json:"resize_keyboard,omitempty"`
+	OneTimeKeyboard       bool                `json:"one_time_keyboard,omitempty"`
+	InputFieldPlaceholder string              `json:"input_field_placeholder,omitempty"`
+	Selective             bool                `json:"selective,omitempty"`
+}
+
+type KeyboardButton struct {
+	Text              string                      `json:"text"`
+	IconCustomEmojiID string                      `json:"icon_custom_emoji_id,omitempty"`
+	Style             string                      `json:"style,omitempty"`
+	RequestUsers      *KeyboardButtonRequestUsers `json:"request_users,omitempty"`
+	RequestChat       *KeyboardButtonRequestChat  `json:"request_chat,omitempty"`
+	RequestContact    bool                        `json:"request_contact,omitempty"`
+	RequestLocation   bool                        `json:"request_location,omitempty"`
+	RequestPoll       *KeyboardButtonPollType     `json:"request_poll,omitempty"`
+	WebApp            *WebAppInfo                 `json:"web_app,omitempty"`
+}
+
+type KeyboardButtonRequestUsers struct {
+	RequestID       int  `json:"request_id"`
+	UserIsBot       bool `json:"user_is_bot,omitempty"`
+	UserIsPremium   bool `json:"user_is_premium,omitempty"`
+	MaxQuantity     int  `json:"max_quantity,omitempty"`
+	RequestName     bool `json:"request_name,omitempty"`
+	RequestUsername bool `json:"request_username,omitempty"`
+	RequestPhoto    bool `json:"request_photo,omitempty"`
+}
+
+type KeyboardButtonRequestChat struct {
+	RequestID               int                      `json:"request_id"`
+	ChatIsChannel           bool                     `json:"chat_is_channel"`
+	ChatIsForum             bool                     `json:"chat_is_forum,omitempty"`
+	ChatHasUsername         bool                     `json:"requestchat_has_username_name,omitempty"`
+	ChatIsCreated           bool                     `json:"chat_is_created"`
+	UserAdministratorRights *ChatAdministratorRights `json:"user_administrator_rights,omitempty"`
+	BotAdministratorRights  *ChatAdministratorRights `json:"bot_administrator_rights,omitempty"`
+	BotIsMember             bool                     `json:"bot_is_member,omitempty"`
+	RequestTitle            bool                     `json:"request_title,omitempty"`
+	RequestUsername         bool                     `json:"request_username,omitempty"`
+	RequestPhoto            bool                     `json:"request_photo,omitempty"`
+}
+
+type KeyboardButtonPollType struct {
+	Type string `json:"type,omitempty"`
+}
+
+type ReplyKeyboardRemove struct {
+	RemoveKeyboard bool `json:"remove_keyboard"`
+	Selective      bool `json:"selective,omitempty"`
 }
 
 type InlineKeyboardMarkup struct {
@@ -699,11 +885,155 @@ type CopyTextButton struct {
 	Text string `json:"text"`
 }
 
+type CallbackQuery struct {
+	ID              string                    `json:"id"`
+	From            *User                     `json:"from"`
+	Message         *MaybeInaccessibleMessage `json:"message,omitempty"`
+	InlineMessageID string                    `json:"inline_message_id,omitempty"`
+	ChatInstance    string                    `json:"chat_instance"`
+	Data            string                    `json:"data,omitempty"`
+	GameShortName   string                    `json:"game_short_name,omitempty"`
+}
+
+type ForceReply struct {
+	ForceReply            bool   `json:"force_reply"`
+	InputFieldPlaceholder string `json:"input_field_placeholder,omitempty"`
+	Selective             bool   `json:"selective,omitempty"`
+}
+
 type ChatPhoto struct {
 	SmallFileID       string `json:"small_file_id"`
 	SmallFileUniqueID string `json:"small_file_unique_id"`
 	BigFileID         string `json:"big_file_id"`
 	BigFileUniqueID   string `json:"big_file_unique_id"`
+}
+
+type ChatInviteLink struct {
+	InviteLink              string `json:"invite_link"`
+	Creator                 *User  `json:"creator"`
+	CreatesJoinRequest      bool   `json:"creates_join_request"`
+	IsPrimary               bool   `json:"is_primary"`
+	IsRevoked               bool   `json:"is_revoked"`
+	Name                    string `json:"name,omitempty"`
+	ExpireDate              int64  `json:"expire_date,omitempty"`
+	MemberLimit             int    `json:"member_limit,omitempty"`
+	PendingJoinRequestCount int    `json:"pending_join_request_count,omitempty"`
+	SubscriptionPeriod      int    `json:"subscription_period,omitempty"`
+	SubscriptionPrice       int    `json:"subscription_price,omitempty"`
+}
+
+type ChatAdministratorRights struct {
+	IsAnonymous             bool `json:"is_anonymous"`
+	CanManageChat           bool `json:"can_manage_chat"`
+	CanDeleteMessages       bool `json:"can_delete_messages"`
+	CanManageVideoChats     bool `json:"can_manage_video_chats"`
+	CanRestrictMembers      bool `json:"can_restrict_members"`
+	CanPromoteMembers       bool `json:"can_promote_members"`
+	CanChangeInfo           bool `json:"can_change_info"`
+	CanInviteUsers          bool `json:"can_invite_users"`
+	CanPostStories          bool `json:"can_post_stories"`
+	CanEditStories          bool `json:"can_edit_stories"`
+	CanDeleteStories        bool `json:"can_delete_stories"`
+	CanPostMessages         bool `json:"can_post_messages,omitempty"`
+	CanEditMessages         bool `json:"can_edit_messages,omitempty"`
+	CanPinMessages          bool `json:"can_pin_messages,omitempty"`
+	CanManageTopics         bool `json:"can_manage_topics,omitempty"`
+	CanManageDirectMessages bool `json:"can_manage_direct_messages,omitempty"`
+	CanManageTags           bool `json:"can_manage_tags,omitempty"`
+}
+
+type ChatMemberUpdated struct {
+	Chat                    *Chat           `json:"chat"`
+	From                    *User           `json:"from"`
+	Date                    int64           `json:"date"`
+	OldChatMember           *ChatMember     `json:"old_chat_member"`
+	NewChatMember           *ChatMember     `json:"new_chat_member"`
+	InviteLink              *ChatInviteLink `json:"invite_link,omitempty"`
+	ViaJoinRequest          bool            `json:"via_join_request,omitempty"`
+	ViaChatFolderInviteLink bool            `json:"via_chat_folder_invite_link,omitempty"`
+}
+
+// TODO
+type ChatMember struct{}
+
+type ChatMemberOwner struct {
+	Status      string `json:"status"`
+	User        *User  `json:"user"`
+	IsAnonymous bool   `json:"is_anonymous"`
+	CustomTitle string `json:"custom_title,omitempty"`
+}
+
+type ChatMemberAdministrator struct {
+	Status                  string `json:"status"`
+	User                    *User  `json:"user"`
+	CanBeEdited             bool   `json:"can_be_edited"`
+	IsAnonymous             bool   `json:"is_anonymous"`
+	CanManageChat           bool   `json:"can_manage_chat"`
+	CanDeleteMessages       bool   `json:"can_delete_messages"`
+	CanManageVideoChats     bool   `json:"can_manage_video_chats"`
+	CanRestrictMembers      bool   `json:"can_restrict_members"`
+	CanPromoteMembers       bool   `json:"can_promote_members"`
+	CanChangeInfo           bool   `json:"can_change_info"`
+	CanInviteUsers          bool   `json:"can_invite_users"`
+	CanPostStories          bool   `json:"can_post_stories"`
+	CanEditStories          bool   `json:"can_edit_stories"`
+	CanDeleteStories        bool   `json:"can_delete_stories"`
+	CanPostMessages         bool   `json:"can_post_messages,omitempty"`
+	CanEditMessages         bool   `json:"can_edit_messages,omitempty"`
+	CanPinMessages          bool   `json:"can_pin_messages,omitempty"`
+	CanManageTopics         bool   `json:"can_manage_topics,omitempty"`
+	CanManageDirectMessages bool   `json:"can_manage_direct_messages,omitempty"`
+	CanManageTags           bool   `json:"can_manage_tags,omitempty"`
+	CustomTitle             string `json:"custom_title,omitempty"`
+}
+
+type ChatMemberMember struct {
+	Status    string `json:"status"`
+	Tag       string `json:"tag,omitempty"`
+	User      *User  `json:"user"`
+	UntilDate int64  `json:"until_date,omitempty"`
+}
+
+type ChatMemberRestricted struct {
+	Status                string `json:"status"`
+	Tag                   string `json:"tag,omitempty"`
+	User                  *User  `json:"user"`
+	CanSendMessages       bool   `json:"can_send_messages"`
+	CanSendAudios         bool   `json:"can_send_audios"`
+	CanSendDocuments      bool   `json:"can_send_documents"`
+	CanSendPhotos         bool   `json:"can_send_photos"`
+	CanSendVideos         bool   `json:"can_send_videos"`
+	CanSendVideoNotes     bool   `json:"can_send_video_notes"`
+	CanSendVoiceNotes     bool   `json:"can_send_voice_notes"`
+	CanSendPolls          bool   `json:"can_send_polls"`
+	CanSendOtherMessages  bool   `json:"can_send_other_messages"`
+	CanAddWebPagePreviews bool   `json:"can_add_web_page_previews"`
+	CanEditTag            bool   `json:"can_edit_tag"`
+	CanChangeInfo         bool   `json:"can_change_info"`
+	CanInviteUsers        bool   `json:"can_invite_users"`
+	CanPinMessages        bool   `json:"can_pin_messages"`
+	CanManageTopics       bool   `json:"can_manage_topics"`
+	UntilDate             int64  `json:"until_date,omitempty"`
+}
+
+type ChatMemberLeft struct {
+	Status string `json:"status"`
+	User   *User  `json:"user"`
+}
+
+type ChatMemberBanned struct {
+	Status    string `json:"status"`
+	User      *User  `json:"user"`
+	UntilDate int64  `json:"until_date"`
+}
+
+type ChatJoinRequest struct {
+	Chat       *Chat           `json:"chat"`
+	From       *User           `json:"from"`
+	UserChatID int64           `json:"user_chat_id"`
+	Date       int64           `json:"date"`
+	Bio        string          `json:"bio,omitempty"`
+	InviteLink *ChatInviteLink `json:"invite_link,omitempty"`
 }
 
 type ChatPermissions struct {
@@ -756,6 +1086,13 @@ type UserRating struct {
 	Rating             int `json:"rating"`
 	CurrentLevelRating int `json:"current_level_rating"`
 	NextLevelRating    int `json:"next_level_rating,omitempty"`
+}
+
+type LocationAddress struct {
+	CountryCode string `json:"country_code"`
+	State       string `json:"state,omitempty"`
+	City        string `json:"city,omitempty"`
+	Street      string `json:"street,omitempty"`
 }
 
 type ChatLocation struct {
