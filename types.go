@@ -792,8 +792,6 @@ type WebAppInfo struct {
 	URL string `json:"url"`
 }
 
-// InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply
-
 type ReplyMarkup interface {
 	isReplyMarkup()
 }

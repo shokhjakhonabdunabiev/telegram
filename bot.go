@@ -49,7 +49,6 @@ func (p ParseMode) isValid() bool {
 	return false
 }
 
-// TODO: reply_markup can be InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply
 type SendMessageRequest struct {
 	BusinessConnectionID    string                   `json:"business_connection_id,omitempty"`
 	ChatID                  string                   `json:"chat_id"`
@@ -66,7 +65,7 @@ type SendMessageRequest struct {
 	SuggestedPostParameters *SuggestedPostParameters `json:"suggested_post_parameters,omitempty"`
 	ReplyParameters         *ReplyParameters         `json:"reply_parameters,omitempty"`
 	ReplyMarkup             ReplyMarkup              `json:"reply_markup,omitempty"`
-} 
+}
 
 func (bot *Bot) SendMessage(body SendMessageRequest) (*Message, error) {
 	if body.ParseMode != "" && !body.ParseMode.isValid() {
@@ -84,7 +83,6 @@ func (bot *Bot) SendMessage(body SendMessageRequest) (*Message, error) {
 	return &msg, err
 }
 
-// TODO: reply_markup can be InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply
 type SendPhotoRequest struct {
 	BusinessConnectionID    string                   `json:"business_connection_id,omitempty"`
 	ChatID                  string                   `json:"chat_id"`

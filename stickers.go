@@ -18,15 +18,20 @@ type Sticker struct {
 	FileSize         int64         `json:"file_size,omitempty"`
 }
 
+type StickerType string
+
+const (
+	Regular     StickerType = "regular"
+	Mask        StickerType = "mask"
+	CustomEmoji StickerType = "custom_emoji"
+)
+
 type StickerSet struct {
-	Name  string `json:"name"`
-	Title string `json:"title"`
-
-	// Type of stickers in the set, currently one of “regular”, “mask”, “custom_emoji”
-	StickerType string `json:"sticker_type"`
-
-	Stickers  []*Sticker `json:"stickers"`
-	Thumbnail *PhotoSize `json:"thumbnail,omitempty"`
+	Name        string      `json:"name"`
+	Title       string      `json:"title"`
+	StickerType StickerType `json:"sticker_type"`
+	Stickers    []*Sticker  `json:"stickers"`
+	Thumbnail   *PhotoSize  `json:"thumbnail,omitempty"`
 }
 
 type MaskPosition struct {

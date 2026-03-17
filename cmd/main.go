@@ -29,11 +29,12 @@ func main() {
 
 	client := telegram.NewClient(cfg.botApiToken, 10*time.Second)
 
-	msg, err := client.SendPhoto(telegram.SendPhotoRequest{
-		ChatID:  "@move_it_move",
-		Photo:   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqad93DYG24AlwsrIQtEnhwsnFrxiTuj6P0Q&s",
-		Caption: "This photo is sent via BOT API",
+	msg, err := client.SendMessage(telegram.SendMessageRequest{
+		ChatID:    "@move_it_move",
+		Text:      "Wrong parse_mode",
+		ParseMode: "HTML",
 	})
+
 	if err != nil {
 		fmt.Println(err)
 	} else {
