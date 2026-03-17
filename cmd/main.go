@@ -3,39 +3,42 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/shokhjakhonabdunabiev/telegram"
 )
 
+type Config struct {
+	botApiToken string
+}
+
 func main() {
-	client := telegram.NewClient("", 10*time.Second)
-
-
-	user, err := client.GetMe()
+	err := godotenv.Load()
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal("error loading .env file")
 	}
-	print(user)
 
-	chat, err := client.GetChat(telegram.GetChatRequest{ChatID: "@move_it_move"})
-	if err != nil {
-		fmt.Println(err)
-		return
+	botApiToken := os.Getenv("BOT_API_TOKEN")
+
+	cfg := Config{
+		botApiToken: botApiToken,
 	}
-	print(chat)
 
-	msg, err := client.SendMessage(telegram.SendMessageRequest{
-		ChatID:    "@move_it_move",
-		Text:      `> "Great things are not done by impulse, but by a series of small things brought together\." — Vincent Van Gogh`,
-		ParseMode: telegram.MarkdownV2,
+	client := telegram.NewClient(cfg.botApiToken, 10*time.Second)
+
+	msg, err := client.SendPhoto(telegram.SendPhotoRequest{
+		ChatID:  "@move_it_move",
+		Photo:   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqad93DYG24AlwsrIQtEnhwsnFrxiTuj6P0Q&s",
+		Caption: "This photo is sent via BOT API",
 	})
 	if err != nil {
 		fmt.Println(err)
-		return
+	} else {
+		print(msg)
 	}
-	print(msg)
 }
 
 func print[T any](data T) {

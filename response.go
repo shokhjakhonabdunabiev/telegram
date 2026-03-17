@@ -2,7 +2,7 @@ package telegram
 
 import "encoding/json"
 
-type Response struct {
+type APIResponse struct {
 	OK          bool                `json:"ok"`
 	Result      json.RawMessage     `json:"result,omitempty"`
 	ErrorCode   int                 `json:"error_code,omitempty"`
