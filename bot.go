@@ -65,8 +65,8 @@ type SendMessageRequest struct {
 	MessageEffectID         string                   `json:"message_effect_id,omitempty"`
 	SuggestedPostParameters *SuggestedPostParameters `json:"suggested_post_parameters,omitempty"`
 	ReplyParameters         *ReplyParameters         `json:"reply_parameters,omitempty"`
-	ReplyMarkup             any                      `json:"reply_markup,omitempty"`
-}
+	ReplyMarkup             ReplyMarkup              `json:"reply_markup,omitempty"`
+} 
 
 func (bot *Bot) SendMessage(body SendMessageRequest) (*Message, error) {
 	if body.ParseMode != "" && !body.ParseMode.isValid() {
@@ -84,10 +84,25 @@ func (bot *Bot) SendMessage(body SendMessageRequest) (*Message, error) {
 	return &msg, err
 }
 
+// TODO: reply_markup can be InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply
 type SendPhotoRequest struct {
-	ChatID  string `json:"chat_id"`
-	Photo   string `json:"photo"`
-	Caption string `json:"caption,omitempty"`
+	BusinessConnectionID    string                   `json:"business_connection_id,omitempty"`
+	ChatID                  string                   `json:"chat_id"`
+	MessageThreadID         int                      `json:"message_thread_id,omitempty"`
+	DirectMessagesTopicID   int                      `json:"direct_messages_topic_id,omitempty"`
+	Photo                   string                   `json:"photo"`
+	Caption                 string                   `json:"caption,omitempty"`
+	ParseMode               ParseMode                `json:"parse_mode,omitempty"`
+	CaptionEntities         []*MessageEntity         `json:"caption_entities,omitempty"`
+	ShowCaptionAboveMedia   bool                     `json:"show_caption_above_media,omitempty"`
+	HasSpoiler              bool                     `json:"has_spoiler,omitempty"`
+	DisableNotification     bool                     `json:"disable_notification,omitempty"`
+	ProtectContent          bool                     `json:"protect_content,omitempty"`
+	AllowPaidBroadcast      bool                     `json:"allow_paid_broadcast,omitempty"`
+	MessageEffectID         string                   `json:"message_effect_id,omitempty"`
+	SuggestedPostParameters *SuggestedPostParameters `json:"suggested_post_parameters,omitempty"`
+	ReplyParameters         *ReplyParameters         `json:"reply_parameters,omitempty"`
+	ReplyMarkup             ReplyMarkup              `json:"reply_markup,omitempty"`
 }
 
 func (bot *Bot) SendPhoto(body SendPhotoRequest) (*Message, error) {

@@ -792,6 +792,12 @@ type WebAppInfo struct {
 	URL string `json:"url"`
 }
 
+// InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply
+
+type ReplyMarkup interface {
+	isReplyMarkup()
+}
+
 type ReplyKeyboardMarkup struct {
 	Keyboard              [][]*KeyboardButton `json:"keyboard"`
 	IsPersistent          bool                `json:"is_persistent,omitempty"`
@@ -800,6 +806,29 @@ type ReplyKeyboardMarkup struct {
 	InputFieldPlaceholder string              `json:"input_field_placeholder,omitempty"`
 	Selective             bool                `json:"selective,omitempty"`
 }
+
+func (ReplyKeyboardMarkup) isReplyMarkup() {}
+
+type ReplyKeyboardRemove struct {
+	RemoveKeyboard bool `json:"remove_keyboard"`
+	Selective      bool `json:"selective,omitempty"`
+}
+
+func (ReplyKeyboardRemove) isReplyMarkup() {}
+
+type InlineKeyboardMarkup struct {
+	InlineKeyboard []*InlineKeyboardButton `json:"inline_keyboard"`
+}
+
+func (InlineKeyboardMarkup) isReplyMarkup() {}
+
+type ForceReply struct {
+	ForceReply            bool   `json:"force_reply"`
+	InputFieldPlaceholder string `json:"input_field_placeholder,omitempty"`
+	Selective             bool   `json:"selective,omitempty"`
+}
+
+func (ForceReply) isReplyMarkup() {}
 
 type KeyboardButton struct {
 	Text              string                      `json:"text"`
@@ -839,15 +868,6 @@ type KeyboardButtonRequestChat struct {
 
 type KeyboardButtonPollType struct {
 	Type string `json:"type,omitempty"`
-}
-
-type ReplyKeyboardRemove struct {
-	RemoveKeyboard bool `json:"remove_keyboard"`
-	Selective      bool `json:"selective,omitempty"`
-}
-
-type InlineKeyboardMarkup struct {
-	InlineKeyboard []*InlineKeyboardButton `json:"inline_keyboard"`
 }
 
 type InlineKeyboardButton struct {
@@ -893,12 +913,6 @@ type CallbackQuery struct {
 	ChatInstance    string                    `json:"chat_instance"`
 	Data            string                    `json:"data,omitempty"`
 	GameShortName   string                    `json:"game_short_name,omitempty"`
-}
-
-type ForceReply struct {
-	ForceReply            bool   `json:"force_reply"`
-	InputFieldPlaceholder string `json:"input_field_placeholder,omitempty"`
-	Selective             bool   `json:"selective,omitempty"`
 }
 
 type ChatPhoto struct {
