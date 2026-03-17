@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 func (bot *Bot) GetMe() (*User, error) {
@@ -36,8 +37,17 @@ type ParseMode string
 
 const (
 	HTML       ParseMode = "HTML"
+	Markdown   ParseMode = "Markdown"
 	MarkdownV2 ParseMode = "MarkdownV2"
 )
+
+func (p ParseMode) isValid() bool {
+	switch p {
+	case HTML, Markdown, MarkdownV2:
+		return true
+	}
+	return false
+}
 
 // TODO: reply_markup can be InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply
 type SendMessageRequest struct {
@@ -59,6 +69,10 @@ type SendMessageRequest struct {
 }
 
 func (bot *Bot) SendMessage(body SendMessageRequest) (*Message, error) {
+	if body.ParseMode != "" && !body.ParseMode.isValid() {
+		return nil, fmt.Errorf("unsupported parse_mode: %s", body.ParseMode)
+	}
+
 	res, err := bot.post("sendMessage", body)
 	if err != nil {
 		return nil, err
