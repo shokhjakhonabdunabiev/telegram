@@ -33,6 +33,31 @@ func (bot *Bot) GetChat(params GetChatRequest) (*ChatFullInfo, error) {
 	return &chatInfo, err
 }
 
+type ForwardMessageRequest struct {
+	ChatID                  string                   `json:"chat_id"`
+	MessageThreadID         int                      `json:"message_thread_id,omitempty"`
+	DirectMessagesTopicID   int                      `json:"direct_messages_topic_id,omitempty"`
+	FromChatID              string                   `json:"from_chat_id"`
+	VideoStartTimestamp     int64                    `json:"video_start_timestamp,omitempty"`
+	DisableNotification     bool                     `json:"disable_notification,omitempty"`
+	ProtectContent          bool                     `json:"protect_content,omitempty"`
+	MessageEffectID         string                   `json:"message_effect_id,omitempty"`
+	SuggestedPostParameters *SuggestedPostParameters `json:"suggested_post_parameters,omitempty"`
+	MessageID               int                      `json:"message_id"`
+}
+
+func (bot *Bot) ForwardMessage(body ForwardMessageRequest) (*Message, error) {
+	res, err := bot.post("forwardMessage", body)
+	if err != nil {
+		return nil, err
+	}
+
+	var msg Message
+	err = json.Unmarshal(res.Result, &msg)
+
+	return &msg, err
+}
+
 type ParseMode string
 
 const (
